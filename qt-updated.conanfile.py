@@ -408,8 +408,9 @@ class QtConan(ConanFile):
     def layout(self):
         cmake_layout(self, src_folder="src")
         # https://github.com/conan-io/conan-center-index/issues/15488
+        # https://github.com/conan-io/conan-center-index/issues/26046
         # hack for ninja issue to finding source files due to log relative paths being appended to the build directory
-        # is is also recommended to set conan_home as enviroment variable in the system with value of C:\C2; this worked for me
+        # is is also recommended to set conan_home as enviroment variable in the system with value of C:\C2; this worked for me (only on win 10 tho)
         # also no_copy_source = False
         if self.settings.os == "Windows" and self.options.get_safe("qtwebengine", False):
             self.folders.build = "build"
