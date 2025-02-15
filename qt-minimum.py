@@ -412,9 +412,8 @@ class QtConan(ConanFile):
     def layout(self):
         cmake_layout(self, src_folder="src")
         # https://github.com/conan-io/conan-center-index/issues/15488
-        # https://github.com/conan-io/conan-center-index/issues/26046
         # hack for ninja issue to finding source files due to log relative paths being appended to the build directory
-        # is is also recommended to set conan_home as enviroment variable in the system with value of C:\C2; this worked for me (only on win 10 tho)
+        # is is also recommended to set conan_home as enviroment variable in the system with value of C:\C2; this worked for me
         # also no_copy_source = False
         if self.settings.os == "Windows" and self.options.get_safe("qtwebengine", False):
             self.folders.build = "build"
@@ -522,8 +521,6 @@ class QtConan(ConanFile):
             self.tool_requires('strawberryperl/5.32.1.1@tescan/stable')
 
         if self.options.get_safe("qtwebengine"):
-            #DPA added
-            self.tool_requires("gn/qt-20240924")
             self.tool_requires("nodejs/18.15.0")
             self.tool_requires("gperf/3.1")
             # gperf, bison, flex, python >= 2.7.5 & < 3
@@ -704,15 +701,6 @@ class QtConan(ConanFile):
         for feature in str(self.options.disabled_features).split():
             tc.variables[f"FEATURE_{feature}"] = "OFF"
 
-        # DPA ADDED
-        if self.options.get_safe("qtwebengine"):
-            # Use GN from Conan instead of having Qt build it
-            tc.variables["Gn_FOUND"] = True
-            tc.variables["Gn_VERSION"] = self.version
-            gn_dir = self.dependencies.build["gn"].package_folder
-            executable = "gn.exe" if self.settings_build.os == "Windows" else "gn"
-            tc.variables["Gn_EXECUTABLE"] = os.path.join(gn_dir, "bin", executable).replace("\\", "/")
-        
         if self.settings.os == "Macos":
             tc.variables["FEATURE_framework"] = "OFF"
         elif self.settings.os == "Android":
@@ -1705,5 +1693,7 @@ class QtConan(ConanFile):
 
         for c in self.cpp_info.components:
             _add_build_modules_for_component(c)
+
+        self.cpp_info.set_property("cmake_build_modules", build_modules_list)
 
         self.cpp_info.set_property("cmake_build_modules", build_modules_list)
