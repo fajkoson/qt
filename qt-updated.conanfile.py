@@ -698,6 +698,14 @@ class QtConan(ConanFile):
         for feature in str(self.options.disabled_features).split():
             tc.variables[f"FEATURE_{feature}"] = "OFF"
 
+        if self.options.get_safe("qtwebengine"):
+            # Use GN from Conan instead of having Qt build it
+            tc.variables["Gn_FOUND"] = True
+            tc.variables["Gn_VERSION"] = self.version
+            gn_dir = self.dependencies.build["gn"].package_folder
+            executable = "gn.exe" if self.settings_build.os == "Windows" else "gn"
+            tc.variables["Gn_EXECUTABLE"] = os.path.join(gn_dir, "bin", executable).replace("\\", "/")
+        
         if self.settings.os == "Macos":
             tc.variables["FEATURE_framework"] = "OFF"
         elif self.settings.os == "Android":
