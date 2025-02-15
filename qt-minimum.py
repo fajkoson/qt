@@ -169,12 +169,16 @@ class QtConan(ConanFile):
         "qtmqtt": False,
         "qtremoteobjects": False,
 
-        "qttools": True,
+        "qttools": False,
+        "qtwebview": False, 
+
+        "qtwebsockets": False,
+
         "qtwebchannel": True,
-        "qtwebengine": True,
-        "qtwebsockets": True,
         "qtdeclarative": True,
-        "qtwebview": True,      
+        "qtwebengine": True,
+        "gui": True,
+        "widgets": True,
         
     })
 
@@ -518,6 +522,7 @@ class QtConan(ConanFile):
             self.tool_requires('strawberryperl/5.32.1.1@tescan/stable')
 
         if self.options.get_safe("qtwebengine"):
+            #DPA added
             self.tool_requires("gn/qt-20240924")
             self.tool_requires("nodejs/18.15.0")
             self.tool_requires("gperf/3.1")
@@ -699,6 +704,7 @@ class QtConan(ConanFile):
         for feature in str(self.options.disabled_features).split():
             tc.variables[f"FEATURE_{feature}"] = "OFF"
 
+        # DPA ADDED
         if self.options.get_safe("qtwebengine"):
             # Use GN from Conan instead of having Qt build it
             tc.variables["Gn_FOUND"] = True
