@@ -518,6 +518,7 @@ class QtConan(ConanFile):
             self.tool_requires('strawberryperl/5.32.1.1@tescan/stable')
 
         if self.options.get_safe("qtwebengine"):
+            self.tool_requires("gn/qt-20240924")
             self.tool_requires("nodejs/18.15.0")
             self.tool_requires("gperf/3.1")
             # gperf, bison, flex, python >= 2.7.5 & < 3
